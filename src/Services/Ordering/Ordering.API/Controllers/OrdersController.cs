@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Ordering.Application.DTOs;
+﻿using BuildingBlocks.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Interfaces;
+using Ordering.Application.Models;
 
 namespace Ordering.API.Controllers;
 
@@ -16,8 +17,8 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<OrderDto.OrderReadDto>> Create(
-        [FromBody] OrderDto.OrderCreateDto dto, 
+    public async Task<ActionResult<OrderReadDto>> Create(
+        [FromBody] OrderCreateDto dto, 
         CancellationToken ct)
     {
         var created = await _service.CreateAsync(dto, ct);
@@ -25,7 +26,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<OrderDto.OrderReadDto>> GetById(Guid id, CancellationToken ct)
+    public async Task<ActionResult<OrderReadDto>> GetById(Guid id, CancellationToken ct)
     {
         var res = await _service.GetByIdAsync(id, ct);
 
@@ -38,7 +39,7 @@ public class OrdersController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<OrderDto.OrderReadDto>>> GetPaged(
+    public async Task<ActionResult<List<OrderReadDto>>> GetPaged(
         [FromQuery] int pageIndex = 1,
         [FromQuery] int pageSize = 10,
         CancellationToken ct = default)
@@ -48,9 +49,9 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<OrderDto.OrderReadDto>> Update(
+    public async Task<ActionResult<OrderReadDto>> Update(
         Guid id, 
-        [FromBody] OrderDto.OrderUpdateDto dto, 
+        [FromBody] OrderUpdateDto dto, 
         CancellationToken ct)
     {
         var updated = await _service.UpdateAsync(id, dto, ct);

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Ordering.Application.DTOs;
+using Ordering.Application.Models;
 using Ordering.Domain.Entities;
 
 namespace Ordering.Application.Mapping;
@@ -8,7 +8,7 @@ public class OrderMappingProfile : Profile
 {
     public OrderMappingProfile()
     {
-        CreateMap<OrderDto.OrderCreateDto, Order>();
-        CreateMap<Order, OrderDto.OrderReadDto>();
+        CreateMap<OrderCreateDto, Order>();
+        CreateMap<Order, OrderReadDto>();
     }
 }

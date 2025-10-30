@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using Ordering.Application.DTOs;
+using Ordering.Application.Models;
 
 namespace Ordering.Application.Validators;
 
 public class OrderValidator
 {
-    public class OrderCreateValidator : AbstractValidator<OrderDto.OrderCreateDto>
+    public class OrderCreateValidator : AbstractValidator<OrderCreateDto>
     {
         public OrderCreateValidator()
         {
@@ -16,7 +16,7 @@ public class OrderValidator
         }
     }
 
-    public class OrderUpdateValidator : AbstractValidator<OrderDto.OrderUpdateDto>
+    public class OrderUpdateValidator : AbstractValidator<OrderUpdateDto>
     {
         public OrderUpdateValidator()
         {
