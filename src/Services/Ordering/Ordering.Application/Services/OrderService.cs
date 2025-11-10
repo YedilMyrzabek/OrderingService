@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using MassTransit;
 using Ordering.Application.Abstractions.Persistence;
+using Ordering.Application.IntegrationEvents;
 using Ordering.Application.Interfaces;
 using Ordering.Application.Models;
 using Ordering.Domain.Entities;
@@ -11,11 +13,14 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _repo;
     private readonly IMapper _mapper;
+    private readonly IPublishEndpoint _publishEndpoint; 
 
-    public OrderService(IOrderRepository repo, IMapper mapper)
+
+    public OrderService(IOrderRepository repo, IMapper mapper, IPublishEndpoint publishEndpoint)
     {
         _repo = repo;
         _mapper = mapper;
+        _publishEndpoint = publishEndpoint;
     }
     
     public async Task<OrderReadDto> CreateAsync(OrderCreateDto dto, CancellationToken ct = default)
@@ -25,6 +30,26 @@ public class OrderService : IOrderService
 
         var entity = _mapper.Map<Order>(dto);
         await _repo.AddAsync(entity, ct);
+
+        var orderCreatedEvent = new OrderCreatedEvent
+        {
+            OrderId = entity.Id,
+            OrderNumber = entity.Number,
+            CustomerName = entity.CustomerName,
+            TotalAmount = entity.TotalAmount,
+            Status = entity.Status,
+            CreatedAtUtc = entity.CreatedAtUtc
+        };
+        
+        var orderEmailEvent = new OrderEmailEvent
+        {
+            OrderName = entity.Number,
+            CustomerName = entity.CustomerName,
+        };
+        
+        await _publishEndpoint.Publish(orderCreatedEvent, ct);
+        await _publishEndpoint.Publish(orderEmailEvent, ct);
+        
         return _mapper.Map<OrderReadDto>(entity);
     }
 

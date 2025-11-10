@@ -17,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services
     .AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters();
+    builder.Services.AddMassTransitWithRabbitMq(builder.Configuration);
 builder.Services.AddValidatorsFromAssemblyContaining<OrderValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
